@@ -52,7 +52,7 @@ class GenerateRoles
     {
         $permissions = "";
         foreach ($this->permissions as $per) {
-            $permissions .= '           "'.$per.'",' . "\n";
+            $permissions .= '"'.$per.'",' . "\n";
         }
         $this->generateStubs(
             $this->stubPath . "migration.stub",

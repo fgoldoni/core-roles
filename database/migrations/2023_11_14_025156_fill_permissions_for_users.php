@@ -5,62 +5,56 @@ use Illuminate\Config\Repository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class FillPermissionsFor{{ name }} extends Migration
+class FillPermissionsForusers extends Migration
 {
 
-    protected $guardName;
+    protected string $guardName;
 
-    protected $permissions;
+    protected array $permissions;
 
-    protected $roles;
+    protected array $roles;
 
 
     public function __construct()
     {
         $this->guardName = config('core-roles.defaults.guard');
 
-        $permissions = collect([
-            {{ permissions }}
-        ]);
+        $permissions = collect(config('core-roles.defaults.permissions.users'));
 
-        //Add New permissions
-        $this->permissions = $permissions->map(function ($permission) {
-            return [
+        $this->permissions = $permissions->map(fn ($permission) => [
+            'id' => (string) \Illuminate\Support\Str::ulid(),
+            'name' => $permission,
+            'guard_name' => $this->guardName,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ])->toArray();
+
+        $this->roles = [
+            [
                 'id' => (string) \Illuminate\Support\Str::ulid(),
-                'name' => $permission,
+                'name' => config('core-roles.roles.administrator'),
                 'guard_name' => $this->guardName,
+                'permissions' => $permissions,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ];
-        })->toArray();
-
-        //Role should already exists
-         $this->roles = [
-             [
-                 'id' => (string) \Illuminate\Support\Str::ulid(),
-                 'name' => config('core-roles.roles.administrator'),
-                 'guard_name' => $this->guardName,
-                 'permissions' => $permissions,
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-             [
-                 'id' => (string) \Illuminate\Support\Str::ulid(),
-                 'name' => config('core-roles.roles.manager'),
-                 'guard_name' => $this->guardName,
-                 'permissions' => [],
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-             [
-                 'id' => (string) \Illuminate\Support\Str::ulid(),
-                 'name' => config('core-roles.roles.user'),
-                 'guard_name' => $this->guardName,
-                 'permissions' => [],
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-         ];
+            ],
+            [
+                'id' => (string) \Illuminate\Support\Str::ulid(),
+                'name' => config('core-roles.roles.manager'),
+                'guard_name' => $this->guardName,
+                'permissions' => [],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id' => (string) \Illuminate\Support\Str::ulid(),
+                'name' => config('core-roles.roles.user'),
+                'guard_name' => $this->guardName,
+                'permissions' => [],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ];
     }
 
 
@@ -74,7 +68,7 @@ class FillPermissionsFor{{ name }} extends Migration
             'role_has_permissions' => 'role_has_permissions',
         ]);
 
-        DB::transaction(function () use($tableNames) {
+        DB::transaction(function () use ($tableNames) {
             foreach ($this->permissions as $permission) {
                 $permissionItem = DB::table($tableNames['permissions'])->where([
                     'name' => $permission['name'],
@@ -131,7 +125,7 @@ class FillPermissionsFor{{ name }} extends Migration
             'role_has_permissions' => 'role_has_permissions',
         ]);
 
-        DB::transaction(function () use ($tableNames){
+        DB::transaction(function () use ($tableNames) {
             foreach ($this->permissions as $permission) {
                 $permissionItem = DB::table($tableNames['permissions'])->where([
                     'name' => $permission['name'],
