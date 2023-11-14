@@ -1,0 +1,57 @@
+{
+    "name": "goldoni/core-roles",
+    "description": "ACL Roles / Permissions for SellFirst Admin build for Api",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "ACL",
+        "roles",
+        "permissions"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Goldoni\\CoreRoles\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Goldoni\\CoreRoles\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Goldoni",
+            "email": "fotsa.goldoni@yahoo.fr"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Goldoni\\CoreRoles\\CoreRolesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.31",
+        "spatie/laravel-permission": "^6.1"
+    },
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "require-dev": {
+        "laravel/pint": "^1.13",
+        "orchestra/testbench": "^8.15",
+        "pestphp/pest": "^2.24",
+        "phpstan/phpstan": "^1.10",
+        "rector/rector": "^0.18.7"
+    }
+}
