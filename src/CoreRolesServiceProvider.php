@@ -13,7 +13,27 @@ class CoreRolesServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        //Register Migrations
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        //Register Config file
+        $this->mergeConfigFrom(__DIR__.'/../config/core-roles.php', 'core-roles');
+
+        //Publish Config file
+        $this->publishes([
+            __DIR__.'/../config/core-roles.php' => config_path('core-roles.php')
+        ], 'core-roles-config');
+
+        //Publish Migrations
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'core-roles-migrations');
+
+        //Register generate command
+        $this->commands([
+            CoreRolesGenerate::class,
+            CoreRolesInstall::class
+        ]);
     }
 
     /**
