@@ -52,7 +52,7 @@ return new class () extends Migration {
 
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $pivotPermission, $teams) {
             // $table->unsignedBigInteger($pivotPermission);
-            $table->ulid(PermissionRegistrar::$pivotPermission);
+            $table->ulid($pivotPermission);
             $table->string('model_type');
             $table->ulid($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
