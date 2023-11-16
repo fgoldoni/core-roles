@@ -55,7 +55,8 @@ class FillDefaultAdminUserAndPermissions extends Migration
         }
         $this->userTable = (new $this->userClassName())->getTable();
 
-        $defaultPermissions = collect(config('core-roles.defaults.permissions.system'));
+        $defaultPermissions = collect(config('core-roles.custom.system'));
+        $defaultRoles = collect(config('core-roles.roles'));
 
         //Add new permissions
         $this->permissions = $defaultPermissions->map(fn ($permission) => [
@@ -67,32 +68,13 @@ class FillDefaultAdminUserAndPermissions extends Migration
         ])->toArray();
 
         //Add new roles
-        $this->roles = [
-            [
-                'id' => (string) \Illuminate\Support\Str::ulid(),
-                'name' => config('core-roles.roles.administrator'),
-                'guard_name' => $this->guardName,
-                'permissions' => $defaultPermissions,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'id' => (string) \Illuminate\Support\Str::ulid(),
-                'name' => config('core-roles.roles.manager'),
-                'guard_name' => $this->guardName,
-                'permissions' => [],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'id' => (string) \Illuminate\Support\Str::ulid(),
-                'name' => config('core-roles.roles.user'),
-                'guard_name' => $this->guardName,
-                'permissions' => [],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ];
+        $this->roles = $defaultRoles->map(fn ($role) => [
+            'id' => (string) \Illuminate\Support\Str::ulid(),
+            'name' => $role,
+            'guard_name' => $this->guardName,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ])->toArray();
 
         //Add new users
         $this->users = [
