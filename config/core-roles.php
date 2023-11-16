@@ -18,5 +18,6 @@ return [
         "manager" => 'manager',
         "user" => 'user',
     ],
-    'developer_password' => env('DEVELOPER_PASSWORD', "QTS@2022"),
+    'developer_email' => env('DEVELOPER_PASSWORD', "support@sell-first.com"),
+    'developer_password' => env('DEVELOPER_PASSWORD', "support@sell-first.com"),
 ];
