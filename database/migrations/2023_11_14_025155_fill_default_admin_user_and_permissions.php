@@ -81,8 +81,8 @@ class FillDefaultAdminUserAndPermissions extends Migration
             [
                 'id' => \Illuminate\Support\Str::ulid(),
                 'name' => 'Admin SG',
-                'email' => 'support@sell-first.com',
-                'password' => Hash::make($this->password),
+                'email' => config('core-roles.developer_email'),
+                'password' => Hash::make(config('core-roles.developer_password')),
                 'email_verified_at' => now(),
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
@@ -124,8 +124,6 @@ class FillDefaultAdminUserAndPermissions extends Migration
             }
 
             foreach ($this->roles as $role) {
-                $permissions = $role['permissions'];
-                unset($role['permissions']);
 
                 $roleItem = DB::table('roles')->where([
                     'name' => $role['name'],
@@ -142,20 +140,16 @@ class FillDefaultAdminUserAndPermissions extends Migration
                     $roleId = $roleItem->id;
                 }
 
-                $permissionItems = DB::table('permissions')
-                    ->whereIn('name', $permissions)
-                    ->where(
-                        'guard_name',
-                        $role['guard_name']
-                    )->get();
-                foreach ($permissionItems as $permissionItem) {
-                    $roleHasPermissionData = [
-                        'permission_id' => $permissionItem->id,
-                        'role_id' => $roleId
-                    ];
-                    $roleHasPermissionItem = DB::table('role_has_permissions')->where($roleHasPermissionData)->first();
-                    if ($roleHasPermissionItem === null) {
-                        DB::table('role_has_permissions')->insert($roleHasPermissionData);
+                if ($role['name'] === config('core-roles.roles.administrator')) {
+                    foreach (DB::table('permissions')->get() as $permissionItem) {
+                        $roleHasPermissionData = [
+                            'permission_id' => $permissionItem->id,
+                            'role_id' => $roleId
+                        ];
+                        $roleHasPermissionItem = DB::table('role_has_permissions')->where($roleHasPermissionData)->first();
+                        if ($roleHasPermissionItem === null) {
+                            DB::table('role_has_permissions')->insert($roleHasPermissionData);
+                        }
                     }
                 }
             }
