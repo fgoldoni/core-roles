@@ -130,6 +130,7 @@ class FillDefaultAdminUserAndPermissions extends Migration
             throw new RuntimeException('Admin user model not defined');
         }
         DB::transaction(function () {
+            $columnNames = config('permission.column_names');
             foreach ($this->permissions as $permission) {
                 $permissionItem = DB::table('permissions')->where([
                     'name' => $permission['name'],
@@ -213,7 +214,7 @@ class FillDefaultAdminUserAndPermissions extends Migration
 
                         $modelHasRoleData = [
                             'role_id' => $roleItem->id,
-                            'model_id' => $userId,
+                            $columnNames['model_morph_key'] => $userId,
                             'model_type' => $this->userClassName
                         ];
                         $modelHasRoleItem = DB::table('model_has_roles')->where($modelHasRoleData)->first();
@@ -230,7 +231,7 @@ class FillDefaultAdminUserAndPermissions extends Migration
 
                         $modelHasPermissionData = [
                             'permission_id' => $permissionItem->id,
-                            'model_id' => $userId,
+                            $columnNames['model_morph_key'] => $userId,
                             'model_type' => $this->userClassName
                         ];
                         $modelHasPermissionItem = DB::table('model_has_permissions')->where($modelHasPermissionData)->first();
@@ -256,16 +257,17 @@ class FillDefaultAdminUserAndPermissions extends Migration
             throw new RuntimeException('Admin user model not defined');
         }
         DB::transaction(function () {
+            $columnNames = config('permission.column_names');
             foreach ($this->users as $user) {
                 $userItem = DB::table($this->userTable)->where('email', $user['email'])->first();
                 if ($userItem !== null) {
                     DB::table($this->userTable)->where('id', $userItem->id)->delete();
                     DB::table('model_has_permissions')->where([
-                        'model_id' => $userItem->id,
+                        $columnNames['model_morph_key'] => $userItem->id,
                         'model_type' => $this->userClassName
                     ])->delete();
                     DB::table('model_has_roles')->where([
-                        'model_id' => $userItem->id,
+                        $columnNames['model_morph_key'] => $userItem->id,
                         'model_type' => $this->userClassName
                     ])->delete();
                 }
