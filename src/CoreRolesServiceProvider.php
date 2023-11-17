@@ -5,6 +5,9 @@ namespace Goldoni\CoreRoles;
 use Illuminate\Support\ServiceProvider;
 use Goldoni\CoreRoles\Console\Commands\CoreRolesGenerate;
 use Goldoni\CoreRoles\Console\Commands\CoreRolesInstall;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 class CoreRolesServiceProvider extends ServiceProvider
 {
@@ -41,6 +44,8 @@ class CoreRolesServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app['router']->aliasMiddleware('role', RoleMiddleware::class);
+        $this->app['router']->aliasMiddleware('permission', PermissionMiddleware::class);
+        $this->app['router']->aliasMiddleware('role_or_permission', RoleOrPermissionMiddleware::class);
     }
 }
