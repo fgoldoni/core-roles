@@ -27,7 +27,9 @@ class GenerateRoles
             Str::replace('_', '-', $tableName) .'.show',
             Str::replace('_', '-', $tableName) .'.edit',
             Str::replace('_', '-', $tableName) .'.update',
-            Str::replace('_', '-', $tableName) .'.destroy',
+            Str::replace('_', '-', $tableName) .'.delete',
+            Str::replace('_', '-', $tableName) .'.force_delete',
+            Str::replace('_', '-', $tableName) .'.restore',
             Str::replace('_', '-', $tableName) .'.export',
             Str::replace('_', '-', $tableName) .'.bulk',
         ];
