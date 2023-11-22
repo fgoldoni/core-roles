@@ -10,6 +10,7 @@ return [
             "system.profile",
             "system.verification",
             "system.password",
+            "system.impersonate",
             "system.logout",
         ]
     ],
